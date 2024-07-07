@@ -13,7 +13,7 @@ function FrontPageProducts() {
   const [nextPage,setNextPage]=useState(itemPerPage);
 
   const getProduct=async ()=>{
-    await fetch('https://ecommercebackend-qi6x.onrender.com/')
+    await fetch('https://ecommercebackend-avcz.onrender.com/')
       .then(response => response.json())
       .then(res => {
         setAll(res);
