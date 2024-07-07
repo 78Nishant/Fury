@@ -10,14 +10,14 @@ function SearchPage() {
   const [product, setProduct] = useState();
   const [productArray, setProductArray] = useState([]);
   const getProduct = async () => {
-    const product = await axios.get(`https://ecommercebackend-qi6x.onrender.com/search/${search}`);
+    const product = await axios.get(`https://ecommercebackend-avcz.onrender.com/search/${search}`);
     setProductArray(product.data);
   };
   useEffect(() => {
     getProduct();
   });
   const cart = async () => {
-    const item = await axios.post("https://ecommercebackend-qi6x.onrender.com/mycart", product);
+    const item = await axios.post("https://ecommercebackend-avcz.onrender.com/mycart", product);
     Swal.fire({
       title: "Success",
       text: "Added to cart succesfully",
