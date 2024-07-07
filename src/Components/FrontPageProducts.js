@@ -5,7 +5,7 @@ import Categories from './Categories';
 import axios from 'axios';
 
 function FrontPageProducts() {
-  const [loading,setLoading]=useState(false);
+  const [loading,setLoading]=useState(true);
   const [all,setAll]=useState([])
   const [current,setCurrent]=useState(0);
   
@@ -13,8 +13,12 @@ function FrontPageProducts() {
   const [nextPage,setNextPage]=useState(itemPerPage);
 
   const getProduct=async ()=>{
-    const res=await axios.get('https://ecommercebackend-qi6x.onrender.com/');
-    setAll(res.data);
+    await fetch('https://ecommercebackend-qi6x.onrender.com/')
+      .then(response => response.json())
+      .then(res => {
+        setAll(res);
+        setLoading(false);
+      });
   }
   const currentPage=Math.ceil(current/itemPerPage);
   const totalPage=Math.ceil(all.length/itemPerPage)
@@ -23,7 +27,7 @@ function FrontPageProducts() {
     getProduct();
   
     })
-    const data = all.slice(current, nextPage);
+  const data = all.slice(current, nextPage);
     
     //loading effect
   if(loading){
