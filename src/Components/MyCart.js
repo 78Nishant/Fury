@@ -6,7 +6,7 @@ function MyCart() {
     const navigate=useNavigate();
     const [product,setProduct]=useState([])
     const getProduct=async()=>{
-        const products=await axios.get('https://ecommercebackend-qi6x.onrender.com/mycart')
+        const products=await axios.get('https://ecommercebackend-avcz.onrender.com/mycart')
         setProduct(products.data)
     }
     useEffect(()=>{
@@ -17,10 +17,10 @@ function MyCart() {
     var price=0;
     const remove=async(params)=>{
       const item=params
-      const product=await axios.delete(`https://ecommercebackend-qi6x.onrender.com/mycart/${item}`)
+      const product=await axios.delete(`https://ecommercebackend-avcz.onrender.com/mycart/${item}`)
     }
     const removeAll=async()=>{
-      const product=await axios.delete('https://ecommercebackend-qi6x.onrender.com/mycart/all')
+      const product=await axios.delete('https://ecommercebackend-avcz.onrender.com/mycart/all')
     }
     const buy=(params)=>{
       const product=params
