@@ -42,15 +42,26 @@ function FrontPageProducts() {
   }
   //Pagination
   const set=(params)=>{
+    setLoading(true);
+    setTimeout(()=>{
+      setLoading(false)
+    },5000)
     setCurrent(itemPerPage*(params-1));
     setNextPage(itemPerPage*(params));
   }
   const next=(params)=>{
-    
+    setLoading(true);
+    setTimeout(()=>{
+      setLoading(false)
+    },5000)
     setCurrent(current+itemPerPage);
     setNextPage(nextPage+itemPerPage);
   }
   const prev=()=>{
+    setLoading(true);
+    setTimeout(()=>{
+      setLoading(false)
+    },5000)
     setCurrent(current-itemPerPage);
     setNextPage(nextPage-itemPerPage);
   }
