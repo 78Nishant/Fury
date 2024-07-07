@@ -6,24 +6,33 @@ import axios from "axios";
 
 function DisplayBox(props) {
   const navigate = useNavigate();
+  const [loading,setLoading]=useState(false)
   let product = props.product;
   const price = Math.round(product.price * 83);
   const category = product.category.toUpperCase();
   const productpage = () => {
+    navigate('/loading');
+    setTimeout(()=>{
     navigate("/productpage", { state: { productinfo: { product } } });
+  },3000)
   };
   const tag = product.tags[1] || product.category;
   const ratings = ((price % 10) % 4) + 2;
   const cart = async () => {
     const item = await axios.post("https://ecommercebackend-qi6x.onrender.com/mycart", product);
+    navigate('/loading')
+    setTimeout(()=>{
+    navigate("/mycart"); 
     Swal.fire({
       title: "Success",
       text: "Added to cart succesfully",
       icon: "success",
       confirmButtonText: "Check out!",
     });
-    navigate("/mycart");
+  },3000)
+  
   };
+
   const buy = () => {
     Swal.fire({
       title: "Success",
@@ -94,12 +103,4 @@ function DisplayBox(props) {
 
 export default DisplayBox;
 
-//comments here
-{
-  /* <div className='bg-[#B12704] text-white  w-16 h-7'> -{product.discountPercentage}%</div>
-    <div className='font-bold text-2xl text-[#B12704] text-center mx-2 my-2'>₹{price}</div>
-   
-    <div className='text-black font-bold mx-2 '>{product.rating}</div>
-    <div className='mx-2 font-bold'>{product.title}</div>
-    <div className='text-black my-2  mx-2 flex justify-center'>{category}</div */
-}
+

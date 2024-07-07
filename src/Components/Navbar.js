@@ -8,7 +8,10 @@ function Navbar() {
     navigate("/loginpage");
   };
   const myCart=()=>{
-    navigate('/mycart')
+    navigate('/loading');
+    setTimeout(()=>{
+    navigate('/mycart');
+},3000)
   }
   const deliverable_address = [
     "Pune",
@@ -24,7 +27,10 @@ function Navbar() {
   const [value,setValue]=useState('');
   const search = () => {
     const val=(value.toLowerCase())
+    navigate('/loading');
+    setTimeout(()=>{
     navigate('/search',{ state : {search : val }})
+  },5000)
   };
   const [name,setName]=useState('')
   const [sideView,setSideView]=useState('text-white  h-screen w-0 z-1 invisible absolute')
