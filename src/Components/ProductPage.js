@@ -28,7 +28,7 @@ function ProductPage(props) {
     setIm(image[`${num}`]);
   };
   const cart =async () => {
-    const item=await axios.post('https://ecommercebackend-qi6x.onrender.com/mycart',product)
+    const item=await axios.post('https://ecommercebackend-avcz.onrender.com/mycart',product)
     Swal.fire({
       title: "Success",
       text: "Added to cart succesfully",
@@ -68,7 +68,7 @@ function ProductPage(props) {
   const sendData = async (formdata) => {
     
     const send = await axios.post(
-      `https://ecommercebackend-qi6x.onrender.com/${product.title}`,
+      `https://ecommercebackend-avcz.onrender.com/${product.title}`,
       formdata
     );
   };
