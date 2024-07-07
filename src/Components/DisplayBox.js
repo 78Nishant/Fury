@@ -18,7 +18,7 @@ function DisplayBox(props) {
   const tag = product.tags[1] || product.category;
   const ratings = ((price % 10) % 4) + 2;
   const cart = async () => {
-    const item = await axios.post("https://ecommercebackend-qi6x.onrender.com/mycart", product);
+    const item = await axios.post("https://ecommercebackend-avcz.onrender.com/mycart", product);
     navigate('/loading')
     setTimeout(()=>{
     navigate("/mycart"); 
