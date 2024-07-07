@@ -6,6 +6,7 @@ import LoginPage from './Components/LoginPage';
 import MyCart from './Components/MyCart';
 import Search from './Components/SearchPage'
 import BuyPage from './Components/BuyPage';
+import LoadingPage from './Components/LoadingPage';
 import './App.css';
 
 
@@ -19,6 +20,7 @@ function App() {
           <FrontPageProducts />
           </div>
         } />
+        <Route path='/loading' element={<LoadingPage />} />
         <Route path="/productpage" element={<ProductPage />} />
         <Route path="/loginpage" element={<LoginPage />} />
         <Route path='/mycart' element={<MyCart/>} />
