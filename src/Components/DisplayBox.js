@@ -10,28 +10,38 @@ function DisplayBox(props) {
   const price = Math.round(product.price * 83);
   const category = product.category.toUpperCase();
   const productpage = () => {
+    navigate('/loading');
+    setTimeout(()=>{
     navigate("/productpage", { state: { productinfo: { product } } });
+  },3000)
   };
   const tag = product.tags[1] || product.category;
   const ratings = ((price % 10) % 4) + 2;
   const cart = async () => {
     const item = await axios.post("https://ecommercebackend-qi6x.onrender.com/mycart", product);
+    navigate('/loading')
+    setTimeout(()=>{
+    navigate("/mycart"); 
     Swal.fire({
       title: "Success",
       text: "Added to cart succesfully",
       icon: "success",
       confirmButtonText: "Check out!",
     });
-    navigate("/mycart");
+  },3000)
   };
   const buy = () => {
+    navigate('/loading');
+    setTimeout(()=>{ 
+    navigate("/buyPage", { state: { productInfo: { product } } });
     Swal.fire({
       title: "Success",
       text: "Let's Buy !",
       icon: "success",
       confirmButtonText: "Buy Now!",
     });
-    navigate("/buyPage", { state: { productInfo: { product } } });
+    });
+   
   };
 
   return (
