@@ -20,7 +20,7 @@ function LoginPage() {
 
     }
     const addLog=async (formData)=>{
-      const data=await axios.post('https://ecommercebackend-qi6x.onrender.com/log',formData)
+      const data=await axios.post('https://ecommercebackend-avcz.onrender.com/log',formData)
       console.log("submitted");
       Swal.fire(data.data.message);
       if(data.data.message==='Welcome Back!'){
