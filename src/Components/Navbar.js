@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from './sidebar'
+import Sidebar from './Sidebar'
+import axios from "axios";
 
 function Navbar() {
   const navigate = useNavigate();
+  const [userName,setUserName]=useState('Log in /Sign Up')
+  const getUserInfo=async()=>{
+    const id=localStorage.getItem('auth-id');
+    const idInfo={
+      "authID":id
+    }
+    const info=await axios.post('https://furybackend.onrender.com/activeUser',idInfo);
+    if(info.data!=null) {
+    setUserName(info.data.name )
+    }
+  }
+  getUserInfo();
   const login = () => {
     navigate("/loginpage");
   };
@@ -13,6 +26,7 @@ function Navbar() {
     navigate('/mycart');
 },3000)
   }
+
   const deliverable_address = [
     "Pune",
     "Delhi",
@@ -32,12 +46,12 @@ function Navbar() {
     navigate('/search',{ state : {search : val }})
   },5000)
   };
-  const [name,setName]=useState('')
+
   const [sideView,setSideView]=useState('text-white  h-screen w-0 z-1 invisible absolute')
-  const [backView,setBackView]=useState('flex w-full')
+  const [backView,setBackView]=useState('flex w-full bg-white')
   const sidebar=()=>{
-    if(sideView=='text-white  h-screen w-0 z-1 invisible absolute' ? setSideView('text-white  h-screen w-1/4 z-1 visible backdrop-blur-md') : setSideView('text-white  h-screen w-0 z-1 invisible absolute'));
-    if(sideView=='text-white  h-screen w-0 z-1 invisible absolute' ? setBackView('blur flex w-full ') : setBackView('flex w-full'));
+    if(sideView==='text-white  h-screen w-0 z-1 invisible absolute' ? setSideView('text-white  h-screen w-1/4 z-1') : setSideView('text-white  h-screen w-0 z-1 invisible absolute'));
+    if(sideView==='text-white  h-screen w-0 z-1 invisible absolute' ? setBackView('blur flex w-0 bg-white ') : setBackView('flex w-full bg-white'));
   }
   const change=(e)=>{
     setValue((e.target.value))
@@ -45,34 +59,33 @@ function Navbar() {
 
   return (
      
-    <div className="absolute inset-0 h-14 flex bg-gradient-to-r from-red-600  to-blue-900 text-white w-full">
+    <div className="absolute inset-0 h-14 flex  w-full border-b rounded-3xl ">
       <div className={sideView}>
         <Sidebar />
       </div>
     
     <div className={backView}>
-      <button onClick={sidebar} className="text-3xl font-bold  mx-2">≡</button>
-      <a href="/" className="text-4xl font-bold mx-2 my-2 text-white ">
+      <button onClick={sidebar} className="text-3xl font-bold  mx-2 bg-white">≡</button>
+      <a href="/" className="text-4xl font-bold mx-2 my-2 text-black drop-shadow-2xl ">
         FURY
       </a>
 
       {/* Location bar */}
-      <select className=" w-0 md:w-auto bg-gradient-to-br from-blue-900 to-blue-500  h-10 my-2 mx-10 text-white rounded-xl">
-        {deliverable_address.map((item) => {
-          return <option className="bg-blue-900 text-white appearance-none">
-            <img  className='my-2 h-10' src="https://img.icons8.com/?size=100&id=3723&format=png&color=FFFFFF" />
+      <select className=" w-0 lg:w-auto drop-shadow-2xl bg-white text-black h-10 my-2 lg:mx-10 border  rounded-md">
+        {deliverable_address.map((item,index) => {
+          return <option key={index} className="bg-white text-black appearance-none">
             {item}
             </option>;
         })}
       </select>
 
       {/* Search Bar */}
-      <div className="md:w-5/12 mx-24 flex w-0">
+      <div className="md:w-5/12 xl:mx-24 md:mx-12 flex w-0 ">
         <input
           type="search"
           value={value}
           onChange={change}
-          className="w-full  text-center outline-none bg-white h-10 my-2 text-black rounded-l-2xl"
+          className="w-full  border  text-center outline-none drop-shadow-2xl bg-white h-10 my-2 text-black rounded-2xl"
           placeholder="Search Fury.in"
         />
         <button onClick={search}  
@@ -82,7 +95,7 @@ function Navbar() {
         }
         }}>
           <svg
-            className="w-0 md:w-auto h-10 hover:scale-95 bg-white my-2 hover:transparent hover:rounded-md rounded-r-2xl mr-2 "
+            className="w-0 md:w-auto md:scale-75 h-10 hover:scale-95 bg-white my-2 hover:transparent hover:rounded-md rounded-r-2xl mr-2 "
             xmlns="http://www.w3.org/2000/svg"
             x="0px"
             y="0px"
@@ -99,12 +112,12 @@ function Navbar() {
       </div>
 
       <button onClick={myCart} className=" w-0 flex rounded-md  h-10 my-2 md:w-1/12 ">
-        <img  className='h-8  mx-2 w-0 md:w-auto' src="https://img.icons8.com/ios-filled/ffffff/shopping-cart.png" />
+        <img  className='h-8  mx-2 w-0 md:w-auto' src="https://img.icons8.com/ios-filled/000000/shopping-cart.png" alt="Unable to load "/>
         <div  className="my-2 w-0 md:w-8">Cart</div>
       </button>
-      <button onClick={login} className="w-0 md:w-auto  my-1 mx-16 h-5">
+      <button onClick={login} className="w-0 md:w-auto  my-1 mx-10 h-5">
         <div className="font-light w-0 md:w-auto ">Hello !</div>
-        <div className="text-1xl font-bold w-0 md:w-auto">Login / Sign Up</div>
+        <div className="text-1xl font-bold w-0 md:w-52">{userName}</div>
       </button>
       </div>
       </div>

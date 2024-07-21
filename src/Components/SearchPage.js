@@ -11,7 +11,7 @@ function SearchPage() {
   const [productArray, setProductArray] = useState([]);
   const getProduct = async () => {
     const product = await axios.get(
-      `https://ecommercebackend-qi6x.onrender.com/search/${search}`
+      `https://furybackend.onrender.com/search/${search}`
     );
     setProductArray(product.data);
   };
@@ -20,7 +20,7 @@ function SearchPage() {
   });
   const cart = async () => {
     const item = await axios.post(
-      "https://ecommercebackend-qi6x.onrender.com/mycart",
+      "https://furybackend.onrender.com/mycart",
       product
     );
     Swal.fire({
@@ -57,7 +57,7 @@ function SearchPage() {
         return (
           <button
             onClick={() => productpage(item)}
-            className="h-1/4 flex w-1/2 bg-gradient-to-r from-red-500  to-blue-600 text-white mx-20 my-5 rounded-md drop-shadow-2xl z-1"
+            className="h-1/4 flex w-1/2 bg-white text-black mx-20 my-5 border-3 hover:border-2 rounded-md drop-shadow-2xl z-1"
           >
             <div className=" my-2">
               <img className="h-44" src={item.thumbnail} />
@@ -66,7 +66,7 @@ function SearchPage() {
               <div className="font-bold mx-2 my-2 text-2xl w-full flex justify-start">
                 {item.title}
               </div>
-              <div className="mx-2 text-yellow-400  w-full flex justify-start">
+              <div className="mx-2 text-yellow-600  w-full flex justify-start">
                 {item.rating} / 5
               </div>
               <div className="font-bold mx-2 mt-3  w-full flex justify-start">
@@ -76,12 +76,12 @@ function SearchPage() {
                 -{item.discountPercentage}%
               </div>
               <div className="flex justify-start">
-                <button className="bg-white h-7  text-blue-600 w-24 rounded-md drop-shadow-2xl my-5">
+                <button className=" h-7  text-white bg-blue-600 w-24 rounded-md drop-shadow-2xl my-5">
                   Buy now
                 </button>
                 <button
                   onClick={cart}
-                  className="bg-white text-red-600 w-32 mx-3 rounded-md h-7 my-5"
+                  className="bg-red-600 text-white w-32 mx-3 rounded-md h-7 my-5"
                 >
                   Add to cart
                 </button>

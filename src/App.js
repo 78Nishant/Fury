@@ -6,13 +6,13 @@ import LoginPage from './Components/LoginPage';
 import MyCart from './Components/MyCart';
 import Search from './Components/SearchPage'
 import BuyPage from './Components/BuyPage';
-import './App.css';
+import UserPage from './Components/UserPage';
 import LoadingPage from './Components/LoadingPage';
-
+import './App.css';
 
 function App() {
   return (
-    <div className='bg-[#fff] h-screen inset-0'>
+    <div className='bg-[#fff] absolute overscroll-y-auto h-screen inset-0'>
       <Navbar /> 
       <Routes>
         <Route path="/" element={
@@ -20,6 +20,7 @@ function App() {
           <FrontPageProducts />
           </div>
         } />
+        <Route path='/UserPage' element={<UserPage />} />
         <Route path='/loading' element={<LoadingPage />} />
         <Route path="/productpage" element={<ProductPage />} />
         <Route path="/loginpage" element={<LoginPage />} />

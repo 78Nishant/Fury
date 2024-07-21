@@ -1,25 +1,38 @@
 import React, { useState } from "react";
-import ProductPage from "./ProductPage";
+
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 
 function DisplayBox(props) {
   const navigate = useNavigate();
-  const [loading,setLoading]=useState(false)
   let product = props.product;
+
   const price = Math.round(product.price * 83);
-  const category = product.category.toUpperCase();
+
   const productpage = () => {
     navigate('/loading');
     setTimeout(()=>{
     navigate("/productpage", { state: { productinfo: { product } } });
   },3000)
   };
+ 
+ 
+ 
   const tag = product.tags[1] || product.category;
   const ratings = ((price % 10) % 4) + 2;
   const cart = async () => {
-    const item = await axios.post("https://ecommercebackend-qi6x.onrender.com/mycart", product);
+    const id=localStorage.getItem('auth-id');
+    const idInfo={
+      "authID":id
+    }
+    const userdata=await axios.post('https://furybackend.onrender.com/activeUser',idInfo);
+    if(userdata.data===null){
+      navigate('/loginpage')
+      Swal.fire("Login First")
+    }
+    else{
+     await axios.post(`https://furybackend.onrender.com/usercart/${userdata.data.email}`,product);
     navigate('/loading')
     setTimeout(()=>{
     navigate("/mycart"); 
@@ -30,73 +43,52 @@ function DisplayBox(props) {
       confirmButtonText: "Check out!",
     });
   },3000)
-  
+}
   };
 
-  const buy = () => {
-    Swal.fire({
-      title: "Success",
-      text: "Let's Buy !",
-      icon: "success",
-      confirmButtonText: "Buy Now!",
-    });
-    navigate("/buyPage", { state: { productInfo: { product } } });
+  const buy = async()=>{
+    const id=localStorage.getItem('auth-id');
+    const idInfo={
+      "authID":id
+    }
+    const info=await axios.post('https://furybackend.onrender.com/activeUser',idInfo);
+      if(info.data==null){
+        navigate('/loginpage')
+        Swal.fire("Login First")
+      }
+      else{
+        Swal.fire({
+          title: "Success",
+          text: "Let's Buy !",
+          icon: "success",
+          confirmButtonText: "Buy Now!",
+        });
+        navigate("/buyPage", { state: { productInfo: { product } } });
+      }
   };
 
   return (
-    <div className="h-full w-72 md:mx-10  my-2">
-      <button
-        onClick={productpage}
-        className="  bg-gradient-to-br from-red-400 to-blue-500  w-full    border-[#B12704] rounded-3xl drop-shadow-2xl"
-      >
-        <div className="flex">
-          <img
-            className="h-48 w-60 mx-3 my-3 "
-            src={product.thumbnail}
-            alt="Unable to load image"
-          />
-          <div className="flex justify-end ">
-            <div className="bg-white drop-shadow-2xl  hover:scale-105 absolute text-red-600 h-10 w-8 text-2xl rounded-b-md">
-              +
-            </div>
-          </div>
-        </div>
-        <div className="bg-[#ffffff] h-1/2 rounded-t-[32px] w-full border border-[#ffffff] drop-shadow-lg ">
-          <div className="flex justify-start mx-3 my-2 font-sans  font-bold">
-            {product.title}
-          </div>
-
-          {/* <div className='font-light  my-2 h-10'>{product.description}</div> */}
-          <div className="flex">
-            <button className="my-1 border border-black w-28  mx-3 rounded-md">
-              {tag}
-            </button>
-            <div className="my-1 border border-black w-28   rounded-md">
-              {product.tags[0]}
-            </div>
-          </div>
-          <div className=" mx-3 items-center flex justify-start">
-            ⭐ {ratings}.0/ 5
-          </div>
-          <div className="my-2 text-3xl font-bold flex justify-start mx-3">
-            ₹ {price.toLocaleString("en-IN")}
-          </div>
-        </div>
+    <div className="border h-full w-full rounded-md ">
+      <button className='w-full justify-center flex mt-4' onClick={productpage}>
+      <img className="h-1/2 scale-110  bg-[#e2e5e8] rounded-md w-4/5 justify-center" src={product.thumbnail} />
       </button>
-      <div className="flex justify-center  items-center h-16 w-auto bg-yellow-500 drop-shadow-2xl rounded-br-3xl rounded-bl-3xl">
-        <button
-          onClick={buy}
-          className="font-bold mx-3 w-24 bg-red-500 text-white rounded-md h-10 hover:scale-105"
-        >
-          Buy Now
-        </button>
-        <button
-          onClick={cart}
-          className="font-bold  mx-2 w-28 bg-blue-700 text-white rounded-md h-10 hover:scale-105"
-        >
-          Add to Cart
-        </button>
+      <div className="mt-3">
+        
+        <p className="w-full text-left font-bold xl:ml-4 sm:ml-2 ">{product.title}</p>
+        
+        <p className="w-full text-left ml-4 mt-3">₹{price.toLocaleString("en-IN")}</p>
+        <div className="flex justify-left ml-5 mt-3">
+          <p className="border  w-2/5 h-auto rounded-md">{product.tags[0]}</p>
+          <p className="border w-2/5  ml-3 h-auto rounded-md">{tag}</p>
+        </div>
+        <div className="mt-3 mb-3  flex justify-center ">
+          <button onClick={buy} className="bg-red-500 rounded-md text-white w-1/2 h-10">Check Out</button>
+          <button onClick={cart} className="bg-blue-500 ml-5 w-1/4 flex justify-center items-center rounded-md">
+          <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/ffffff/add-shopping-cart.png" alt="add-shopping-cart"/>
+          </button>
+        </div>
       </div>
+
     </div>
   );
 }

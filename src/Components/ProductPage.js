@@ -28,7 +28,7 @@ function ProductPage(props) {
     setIm(image[`${num}`]);
   };
   const cart =async () => {
-    const item=await axios.post('https://ecommercebackend-qi6x.onrender.com/mycart',product)
+    const item=await axios.post('https://furybackend.onrender.com//mycart',product)
     Swal.fire({
       title: "Success",
       text: "Added to cart succesfully",
@@ -56,7 +56,7 @@ function ProductPage(props) {
     e.preventDefault();
     sendData(formdata);
     console.log(formdata);
-  setFormData({});
+    // setFormData({});
     //notify
     Swal.fire({
       title: "Success",
@@ -66,9 +66,8 @@ function ProductPage(props) {
     });
   };
   const sendData = async (formdata) => {
-    
     const send = await axios.post(
-      `https://ecommercebackend-qi6x.onrender.com/${product.title}`,
+      `https://furybackend.onrender.com//${product.title}`,
       formdata
     );
   };
@@ -85,7 +84,7 @@ function ProductPage(props) {
 
   return (
     <div>
-      <div className="mx-5 my-2  ">
+      <div className="mx-16 mt-14  ">
         <a className="text-blue-800 underline" href="/">
           Home
         </a>{" "}
