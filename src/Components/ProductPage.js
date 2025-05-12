@@ -27,15 +27,29 @@ function ProductPage(props) {
     setNum(Math.abs((num - 1) % size));
     setIm(image[`${num}`]);
   };
-  const cart =async () => {
-    const item=await axios.post('https://furybackend.onrender.com//mycart',product)
+  const cart = async () => {
+    const id=localStorage.getItem('auth-id');
+    const idInfo={
+      "authID":id
+    }
+    const userdata=await axios.post('http://localhost:5000/activeUser',idInfo);
+    if(userdata.data===null){
+      navigate('/loginpage')
+      Swal.fire("Login First")
+    }
+    else{
+     await axios.post(`http://localhost:5000/usercart/${userdata.data.email}`,product);
+    navigate('/loading')
+    setTimeout(()=>{
+    navigate("/mycart"); 
     Swal.fire({
       title: "Success",
       text: "Added to cart succesfully",
       icon: "success",
       confirmButtonText: "Check out!",
     });
-    navigate("/mycart");
+  },3000)
+}
   };
   const buy = () => {
     Swal.fire({
@@ -67,7 +81,7 @@ function ProductPage(props) {
   };
   const sendData = async (formdata) => {
     const send = await axios.post(
-      `https://furybackend.onrender.com//${product.title}`,
+      `http://localhost:5000//${product.title}`,
       formdata
     );
   };

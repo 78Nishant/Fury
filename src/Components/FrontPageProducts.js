@@ -1,111 +1,190 @@
-import React, { useEffect, useState } from 'react'
-import DisplayBox from './DisplayBox'
+import React, { useEffect, useState } from 'react';
+import DisplayBox from './DisplayBox';
 import FrontBanner from './FrontBanner';
-
-
+import { ChevronLeft, ChevronRight, Loader } from 'lucide-react';
 
 function FrontPageProducts() {
-  const [loading,setLoading]=useState(true);
-  const [all,setAll]=useState([])
-  const [current,setCurrent]=useState(0);
-  const itemPerPage=(12);
-  const [nextPage,setNextPage]=useState(itemPerPage);
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
-  const getProduct=async ()=>{
-    // setLoading(true);
-    try{
-    await fetch('https://furybackend.onrender.com/')
-      .then(response => response.json())
-      .then(res => {
-        setAll(res);
-        setLoading(false);
-      });
-    }
-    catch(error){
-      <div>
-        unable to load data at this moment {error}
-      </div>
-    }
-    // const res=await axios.get('https://furybackend.onrender.com/');
-    // setAll(res.data);
+  // Calculate indexes and total pages
+  const lastItemIndex = currentPage * itemsPerPage;
+  const firstItemIndex = lastItemIndex - itemsPerPage;
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const currentItems = products.slice(firstItemIndex, lastItemIndex);
+
+  // Show specific number of pages in pagination control
+  const pageNumbers = [];
+  const maxPageButtons = 5;
+  const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+  const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
   }
-  const currentPage=Math.ceil(current/itemPerPage);
-  const totalPage=Math.ceil(all.length/itemPerPage)
-  
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:5000/');
+      const data = await response.json();
+      setProducts(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-     getProduct();
-    })
-  const data = all.slice(current, nextPage);
-    
-    //loading effect
-  if(loading){
-    const images=['https://t3.ftcdn.net/jpg/00/66/74/90/360_F_66749097_nCsOYh69ix0o7h1DDXztTADd4N3q0Kze.jpg','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTA3aO-MsKu_UfOFz36DtaMyvj_PPYnF4Rj6g&s','https://media.istockphoto.com/id/1404300806/photo/cute-dachshund-puppy-sits-and-looks-attentively-sideways-at-the-owner-waiting-for-a-delicious.webp?b=1&s=170667a&w=0&k=20&c=q5M_2im2chAM4tj-DAHXRKYez_RfL-a5yixXGZddKv0=']
-    const val=(Math.floor(Math.random() * 10))%3;
-    return(
-      <div className='text-5xl font-bold  h-full flex justify-center items-center '>
-        <img src={images[val]} alt="Unable to load"/>
-        Loading...
-      </div>
-    )
-  }
-  //Pagination
-  const set=(params)=>{
-    setLoading(true);
-    setTimeout(()=>{
-      setLoading(false)
-    },5000)
-    setCurrent(itemPerPage*(params-1));
-    setNextPage(itemPerPage*(params));
-  }
-  const next=(params)=>{
-    setLoading(true);
-    setTimeout(()=>{
-      setLoading(false)
-    },5000)
-    setCurrent(current+itemPerPage);
-    setNextPage(nextPage+itemPerPage);
-  }
-  const prev=()=>{
-    setLoading(true);
-    setTimeout(()=>{
-      setLoading(false)
-    },5000)
-    setCurrent(current-itemPerPage);
-    setNextPage(nextPage-itemPerPage);
-  }
-  return (
-    <div className='h-full '>
-    <div className=' scale-80 mt-20 h-1/2 xl:h-96 xl:scale-105'>
-      <FrontBanner/>
-    </div>
-    <button className='grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 lg:mx-24 mx-5 '>
-      {data.map((e)=>{
-        return(
-          <div className='my-8  xl:mx-4 mx-2 '>
-          <DisplayBox product={e} />
+    fetchProducts();
+  }, []);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Loading skeletons
+  const LoadingSkeleton = () => (
+    <div className="w-full h-full min-h-screen flex flex-col items-center">
+      <div className="w-full h-64 bg-gray-200 animate-pulse rounded-md mb-10"></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-7xl px-4">
+        {[...Array(12)].map((_, index) => (
+          <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="h-48 bg-gray-300 animate-pulse"></div>
+            <div className="p-4">
+              <div className="h-4 bg-gray-300 animate-pulse rounded mb-2 w-3/4"></div>
+              <div className="h-4 bg-gray-300 animate-pulse rounded mb-4 w-1/2"></div>
+              <div className="h-10 bg-gray-300 animate-pulse rounded"></div>
+            </div>
           </div>
-        )}
-        )
-      } 
-    </button>
-    <div className='mx-20 text-blue-600 text-center font-sans'> {currentPage+1} / {totalPage} pages </div>
-    
-    {/* Don't use w-screen instead use w-full  */}
-    <div className='w-full  flex justify-center'>
-    <button  onClick={prev} className=' bg-blue-500 w-20 h-10 text-white rounded-md mx-20 my-5'>
-       Prev
-    </button>
-    <ul className='flex my-5'>
-      <button onClick={()=>set(currentPage+1)} className='mx-2 w-7 h-7 hover:bg-blue-600 hover:text-white hover:rounded-full '> {currentPage+1}</button>
-      <button onClick={()=>set(currentPage+2)} className='mx-2 w-7 h-7 hover:bg-blue-600 hover:text-white hover:rounded-full'> {currentPage+2}</button>
-      <button onClick={()=>set(currentPage+3)} className='mx-2 w-7 h-7 hover:bg-blue-600 hover:text-white hover:rounded-full'> {currentPage+3}</button>
-      <button onClick={()=>set(currentPage+4)} className='mx-2 w-7 h-7 hover:bg-blue-600 hover:text-white hover:rounded-full'> {currentPage+4}</button>
-    </ul>
-    <button  onClick={next} className='bg-blue-500 w-20 h-10 text-white rounded-md mx-20 my-5'>
-        Next
-    </button>
+        ))}
+      </div>
     </div>
-    </div>)
+  );
+
+  // Error state
+  if (!loading && !products.length) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
+        <div className="text-red-500 text-5xl mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h2 className="text-2xl font-bold mb-4">Unable to load products</h2>
+        <p className="text-gray-600 mb-6">There was an error loading the product data. Please try again later.</p>
+        <button 
+          onClick={fetchProducts}
+          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-300"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Banner */}
+      <div className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 py-6">
+        <div className="max-w-7xl mx-auto px-4">
+          <FrontBanner />
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        {loading ? (
+          <LoadingSkeleton />
+        ) : (
+          <>
+            {/* Product Title */}
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-gray-800">Featured Products</h2>
+              <div className="h-1 w-24 bg-blue-600 mt-2"></div>
+            </div>
+
+            {/* Product Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {currentItems.map((product, index) => (
+                <div key={index} className="transform transition-transform duration-300 hover:scale-105">
+                  <DisplayBox product={product} />
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="mt-16 flex flex-col items-center">
+              <div className="text-sm text-gray-600 mb-4">
+                Page {currentPage} of {totalPages}
+              </div>
+              <div className="flex items-center space-x-1">
+                <button
+                  onClick={handlePrev}
+                  disabled={currentPage === 1}
+                  className={`p-2 rounded-md ${
+                    currentPage === 1 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  } transition-colors duration-300 flex items-center`}
+                >
+                  <ChevronLeft size={18} />
+                  <span className="hidden sm:inline ml-1">Previous</span>
+                </button>
+
+                <div className="hidden md:flex space-x-1 mx-2">
+                  {pageNumbers.map(number => (
+                    <button
+                      key={number}
+                      onClick={() => handlePageChange(number)}
+                      className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors duration-300 ${
+                        currentPage === number
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                      }`}
+                    >
+                      {number}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleNext}
+                  disabled={currentPage === totalPages}
+                  className={`p-2 rounded-md ${
+                    currentPage === totalPages 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  } transition-colors duration-300 flex items-center`}
+                >
+                  <span className="hidden sm:inline mr-1">Next</span>
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default FrontPageProducts;
